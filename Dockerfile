@@ -4,8 +4,9 @@ FROM python:3.11-slim as builder
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies (curl needed for uv)
 RUN apt-get update && apt-get install -y \
+    curl \
     gcc \
     g++ \
     && rm -rf /var/lib/apt/lists/*
@@ -13,8 +14,10 @@ RUN apt-get update && apt-get install -y \
 # Copy requirements first for better caching
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir --user -r requirements.txt
+# Install UV and dependencies
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    /root/.local/bin/uv venv /app/.venv && \
+    /root/.local/bin/uv pip install --no-cache -r requirements.txt
 
 # Production stage
 FROM python:3.11-slim
@@ -25,8 +28,8 @@ WORKDIR /app
 # Create non-root user for security
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 
-# Copy Python packages from builder stage
-COPY --from=builder /root/.local /home/appuser/.local
+# Copy virtual environment from builder stage
+COPY --from=builder /app/.venv /app/.venv
 
 # Copy application code
 COPY . .
@@ -38,8 +41,8 @@ RUN mkdir -p log data && \
 # Switch to non-root user
 USER appuser
 
-# Add user's local bin to PATH
-ENV PATH=/home/appuser/.local/bin:$PATH
+# Add virtual environment to PATH
+ENV PATH="/app/.venv/bin:$PATH"
 
 # Expose port (PRESERVE: Same port as before)
 EXPOSE 8080
