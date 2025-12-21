@@ -225,7 +225,7 @@ Cross-cutting concerns used by all domains:
 ### Prerequisites
 
 - **Python 3.10+**
-- **pip or Pipenv**
+- **[UV](https://docs.astral.sh/uv/)** *(recommended)* or pip
 - **Git**
 - **Docker (optional)**
 
@@ -246,14 +246,16 @@ cd flask-api-boilerplate
 <summary><b>2. Set Up Development Environment</b></summary>
 
 ```bash
-# Install dependencies and setup pre-commit hooks
+# Install UV (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install dependencies (UV will create .venv automatically)
 make install-dev
 
 # This will:
+# - Create a virtual environment (.venv)
 # - Install all Python dependencies
-# - Set up pre-commit hooks
-# - Configure development tools
-# - Set up code quality tools
+# - Install development tools
 ```
 
 </details>
@@ -300,13 +302,13 @@ make dev
 
 ### Choose your preferred installation method
 
-**Make Commands** *(Recommended)*
+**UV (Recommended)**
 ```bash
 make install-dev
 ```
-- Easy setup with automated configuration
-- Pre-commit hooks enabled
-- All development tools included
+- Fast installation with UV (10-100x faster than pip)
+- Automatic virtual environment management
+- Lockfile support for reproducible builds
 
 **Docker Compose**
 ```bash
@@ -316,8 +318,10 @@ docker-compose up -d
 - Easy cleanup and management
 - Production-like setup
 
-**Manual Installation**
+**Manual Installation (pip fallback)**
 ```bash
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 - Full control over installation

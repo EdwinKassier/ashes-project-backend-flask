@@ -1,65 +1,65 @@
-.PHONY: help install install-dev test test-unit test-integration test-e2e lint format clean docker-build docker-run docker-stop security-check
+.PHONY: help install install-dev test test-unit test-integration test-e2e lint format clean docker-build docker-run docker-stop security-check uv-lock uv-upgrade
 
 # Default target
 help: ## Show this help message
 	@echo "Available commands:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-# Installation
-install: ## Install production dependencies
-	pip install -r requirements.txt
+# Installation (using UV - https://docs.astral.sh/uv/)
+install: ## Install production dependencies using UV
+	uv sync --no-dev
 
-install-dev: ## Install development dependencies
-	pip install -r requirements.txt
-	pip install -e ".[dev]"
+install-dev: ## Install development dependencies using UV
+	uv sync
+	uv pip install -e ".[dev]"
 
 # Testing
 test: ## Run all tests
-	pytest tests/ -v
+	uv run pytest tests/ -v
 
 test-unit: ## Run unit tests only
-	pytest tests/unit/ -v -m "not slow"
+	uv run pytest tests/unit/ -v -m "not slow"
 
 test-integration: ## Run integration tests
-	pytest tests/integration/ -v
+	uv run pytest tests/integration/ -v
 
 test-e2e: ## Run end-to-end tests
-	pytest tests/e2e/ -v
+	uv run pytest tests/e2e/ -v
 
 test-coverage: ## Run tests with coverage report
-	pytest tests/ -v --cov=app --cov-report=html --cov-report=term-missing
+	uv run pytest tests/ -v --cov=app --cov-report=html --cov-report=term-missing
 
 # Code Quality
 lint: ## Run linting checks
-	flake8 app/ tests/ --max-line-length=88 --extend-ignore=E203,W503,E501,F401,F841,F403,F405,E711,E712
-	mypy app/ --ignore-missing-imports || true
-	bandit -r app/ -f json -o bandit-report.json || true
+	uv run flake8 app/ tests/ --max-line-length=88 --extend-ignore=E203,W503,E501,F401,F841,F403,F405,E711,E712
+	uv run mypy app/ --ignore-missing-imports || true
+	uv run bandit -r app/ -f json -o bandit-report.json || true
 
 format: ## Format code with black and isort
-	black app/ tests/ --line-length=88
-	isort app/ tests/ --profile=black --line-length=88
+	uv run black app/ tests/ --line-length=88
+	uv run isort app/ tests/ --profile=black --line-length=88
 
 format-check: ## Check code formatting without making changes
-	black --check app/ tests/ --line-length=88
-	isort --check-only app/ tests/ --profile=black --line-length=88
+	uv run black --check app/ tests/ --line-length=88
+	uv run isort --check-only app/ tests/ --profile=black --line-length=88
 
 # Pre-commit hooks
 pre-commit-install: ## Install pre-commit hooks
-	pre-commit install
+	uv run pre-commit install
 
 pre-commit-run: ## Run pre-commit hooks on all files
-	pre-commit run --all-files
+	uv run pre-commit run --all-files
 
 pre-commit-update: ## Update pre-commit hooks to latest versions
-	pre-commit autoupdate
+	uv run pre-commit autoupdate
 
 validate-requirements: ## Validate requirements.txt for conflicts
 	./scripts/validate-requirements.py
 
 # Security
 security-check: ## Run security checks
-	bandit -r app/ -f json -o bandit-report.json
-	safety check --json --output safety-report.json
+	uv run bandit -r app/ -f json -o bandit-report.json
+	uv run safety check --json --output safety-report.json
 	@echo "Security reports generated: bandit-report.json, safety-report.json"
 
 # Cleanup
@@ -90,19 +90,19 @@ docker-logs: ## View Docker logs
 
 # Development
 dev: ## Run development server
-	FLASK_ENV=development python3 run.py
+	FLASK_ENV=development uv run python run.py
 
 prod: ## Run production server with gunicorn
-	gunicorn --bind 0.0.0.0:8080 --workers 4 --timeout 120 run:app
+	uv run gunicorn --bind 0.0.0.0:8080 --workers 4 --timeout 120 run:app
 
 # Database
 db-migrate: ## Run database migrations
-	flask db upgrade
+	uv run flask db upgrade
 
 db-init: ## Initialize database
-	flask db init
-	flask db migrate -m "Initial migration"
-	flask db upgrade
+	uv run flask db init
+	uv run flask db migrate -m "Initial migration"
+	uv run flask db upgrade
 
 # API Documentation
 docs: ## Generate API documentation
@@ -126,19 +126,27 @@ create-prod-tag: ## Create production tag (usage: make create-prod-tag VERSION=1
 
 # Celery
 celery-worker: ## Run Celery worker locally
-	celery -A celery_worker.celery worker --loglevel=info --concurrency=4
+	uv run celery -A celery_worker.celery worker --loglevel=info --concurrency=4
 
 celery-beat: ## Run Celery beat scheduler locally
-	celery -A celery_worker.celery beat --loglevel=info
+	uv run celery -A celery_worker.celery beat --loglevel=info
 
 celery-flower: ## Run Flower monitoring dashboard
-	celery -A celery_worker.celery flower --port=5555
+	uv run celery -A celery_worker.celery flower --port=5555
 
 celery-purge: ## Purge all tasks from queues
-	celery -A celery_worker.celery purge -f
+	uv run celery -A celery_worker.celery purge -f
 
 celery-status: ## Check Celery worker status
-	celery -A celery_worker.celery inspect active
+	uv run celery -A celery_worker.celery inspect active
 
 celery-stats: ## Show Celery worker statistics
-	celery -A celery_worker.celery inspect stats
+	uv run celery -A celery_worker.celery inspect stats
+
+# UV Management
+uv-lock: ## Generate/update uv.lock file
+	uv lock
+
+uv-upgrade: ## Upgrade all dependencies
+	uv lock --upgrade
+	uv sync

@@ -124,3 +124,6 @@ DudeWheresMyLambo.db
 *.db
 .DS_Store
 DudeWheresMyLambo.db
+
+# UV (optional - comment out to commit lockfile for reproducible builds)
+uv.lock
