@@ -11,7 +11,7 @@ amqp==5.1.1; python_version >= '3.6'
 async-timeout==4.0.2; python_version >= '3.6'
 attrs==22.1.0; python_version >= '3.5'
 bandit>=1.7.0,<2.0.0
-billiard==3.6.4.0
+billiard==4.2.0
 black==23.12.1
 cachecontrol==0.12.11; python_version >= '3.6'
 cachetools==5.2.0; python_version ~= '3.7'
@@ -52,7 +52,7 @@ iniconfig==1.1.1
 isort==5.13.2
 itsdangerous==2.1.2; python_version >= '3.7'
 jinja2==3.1.2; python_version >= '3.7'
-kombu==5.2.4; python_version >= '3.7'
+kombu==5.3.4; python_version >= '3.7'
 markupsafe==2.1.1; python_version >= '3.7'
 marshmallow==3.19.0
 msgpack==1.0.4
