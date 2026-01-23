@@ -37,14 +37,7 @@
 - [System Architecture](#system-architecture)
 - [Quick Start](#quick-start)
 - [Installation Options](#installation-options)
-- [Testing](#testing)
-- [Code Quality](#code-quality)
-- [Security](#security)
-- [CI/CD Pipeline](#cicd-pipeline)
-- [Available Commands](#available-commands)
-- [Deployment](#deployment)
-- [Monitoring](#monitoring)
-- [API Documentation](#api-documentation)
+- [Documentation](#documentation)
 - [Project Structure](#project-structure)
 - [Contributing](#contributing)
 - [Troubleshooting](#troubleshooting)
@@ -54,17 +47,17 @@
 
 ## Overview
 
-A Flask API boilerplate designed for rapid development of web APIs.
+A Flask API boilerplate designed for the development of web APIs.
 
-This template provides everything you need to build scalable, maintainable web APIs with Flask. It includes features like automated testing, CI/CD pipelines, security scanning, monitoring, and deployment automation.
+This template provides the required components to build scalable web APIs with Flask. It includes features such as automated testing, CI/CD pipelines, security scanning, monitoring, and deployment automation.
 
 ### API Architecture
 
-The boilerplate supports both **REST** and **GraphQL** endpoints, giving you flexibility in how you build your API:
+The boilerplate supports REST and GraphQL endpoints:
 
-- **REST API**: Traditional HTTP endpoints with JSON responses
-- **GraphQL**: Flexible query language for efficient data fetching
-- **OpenAPI Documentation**: Interactive API documentation for both interfaces
+- **REST API**: Standard HTTP endpoints with JSON responses.
+- **GraphQL**: Query language for data fetching.
+- **OpenAPI Documentation**: API specification for both interfaces.
 
 ### Feature Overview
 
@@ -220,7 +213,7 @@ Cross-cutting concerns used by all domains:
 
 ## Quick Start
 
-### Get up and running in 5 minutes!
+### Quick Start Guide
 
 ### Prerequisites
 
@@ -356,98 +349,15 @@ docker-compose down
 
 ---
 
-## Testing
+## Documentation
 
-### Testing Suite
+Detailed technical documentation is available in the [`docs/`](docs/) directory:
 
-| **Test Type** | **Command** | **Description** |
-|:---|:---|:---|
-| **Unit Tests** | `make test-unit` | Fast & isolated tests for models, services, and utilities |
-| **Integration Tests** | `make test-integration` | API endpoint and database integration tests |
-| **Coverage Report** | `make test-coverage` | Generate coverage metrics and HTML reports |
-| **All Tests** | `make test` | Run complete test suite with coverage reporting |
-
-### Coverage Goals
-
-| Component | Target | Current |
-|:---|:---|:---|
-| **Overall** | 80%+ | |
-| **Critical Modules** | 90%+ | |
-| **New Code** | 90%+ | |
-
-### Test Categories
-
-- **Unit Tests**: Individual component testing
-- **Integration Tests**: API endpoint testing
-- **Contract Tests**: Backwards compatibility verification
-- **E2E Tests**: End-to-end workflow testing
-- **Performance Tests**: Load and stress testing
-
----
-
-## Code Quality
-
-### Automated Code Quality Tools
-
-| **Tool** | **Command** | **Purpose** |
-|:---|:---|:---|
-| **Black** | `make format` | Code formatting (88 char line length) |
-| **Flake8** | `make lint` | Style guide compliance and error detection |
-| **isort** | `make format` | Import organization and sorting |
-| **Mypy** | `make lint` | Type checking and static analysis |
-| **Pre-commit** | `pre-commit install` | Automated git hooks and quality gates |
-
----
-
-## Security
-
-### Security Measures
-
-| **Tool** | **Command** | **Purpose** |
-|:---|:---|:---|
-| **Bandit** | `make security-check` | Security vulnerability scanning and risk assessment |
-| **Safety** | `make security-check` | Dependency vulnerability checking and security patches |
-| **Authentication** | Built-in | Firebase, API key, and session-based authentication |
-
-### Security Configuration
-
-```bash
-# Enable rate limiting
-RATE_LIMIT_ENABLED=True
-RATE_LIMIT_PER_MINUTE=60
-
-# Configure CORS
-CORS_ORIGINS=https://yourdomain.com,https://app.yourdomain.com
-
-# Security headers (automatically applied)
-X-Content-Type-Options: nosniff
-X-Frame-Options: DENY
-X-XSS-Protection: 1; mode=block
-```
-
----
-
-## CI/CD Pipeline
-
-### Automated Deployment Pipeline
-
-### Pipeline Stages
-
-| **Quality Checks** | **Testing** | **Security** | **Deployment** |
-|:---|:---|:---|:---|
-| *Code Quality* | *Test Suite* | *Security Scanning* | *Production Release* |
-| - Black formatting | - Unit tests | - Bandit security scan | - Docker build |
-| - Flake8 linting | - Integration tests | - Safety dependency check | - Registry push |
-| - Mypy type checking | - Coverage reporting | - Vulnerability assessment | - Cloud deployment |
-| - isort import sorting | - Performance tests | - Security best practices | - Health verification |
-
-### Pipeline Triggers
-
-| **Trigger** | **Command** | **Actions** |
-|:---|:---|:---|
-| **Branch Push** | `git push origin main` | Quality checks, testing, security scans |
-| **Pull Request** | Create PR to main | All checks + code review |
-| **Tag Release** | `git tag prod/v1.0.0 && git push origin prod/v1.0.0` | Full pipeline, deployment, health verification |
+- **[Testing and Quality Assurance](docs/Testing.md)**: Test suite usage, coverage goals, and code quality tools.
+- **[Security](docs/Security.md)**: Security measures, configuration, and tools.
+- **[Deployment and Operations](docs/Deployment.md)**: CI/CD pipelines, deployment strategies, and monitoring.
+- **[API Documentation](docs/API.md)**: API endpoints, usage examples, and specifications.
+- **[System Architecture](docs/Architecture.md)**: detailed architectural overview.
 
 ---
 
@@ -509,164 +419,6 @@ X-XSS-Protection: 1; mode=block
 
 ---
 
-## Deployment
-
-### Production Deployment Guide
-
-### Tag-Based Deployment
-
-**Using Release Script:**
-```bash
-./scripts/create-prod-release.sh 1.0.0
-```
-
-**Or Manually:**
-```bash
-git tag -a prod/v1.0.0 -m "Release v1.0.0"
-git push origin prod/v1.0.0
-```
-
-**Version Format:** `prod/vMAJOR.MINOR.PATCH`
-
-**Examples:** `prod/v1.0.0`, `prod/v1.2.3`, `prod/v2.0.0`
-
-### Production Configuration
-
-```bash
-# Production environment variables
-FLASK_ENV=production
-SECRET_KEY=your-production-secret-key
-DATABASE_URL=sqlite:///app.db
-CORS_ORIGINS=https://yourdomain.com
-RATE_LIMIT_ENABLED=True
-ENABLE_MONITORING=True
-```
-
----
-
-## Monitoring
-
-### Production Monitoring
-
-| **Endpoint** | **Purpose** | **Returns** |
-|:---|:---|:---|
-| `GET /health` | System health check | Application health, service status, timestamp |
-| `GET /status` | Service information | API version, service name, running status |
-| **Logging** | Structured logging | Request logs, error logs, performance metrics |
-
-### Health Check Response
-
-```json
-{
-  "status": "healthy",
-  "service": "flask-api-boilerplate",
-  "timestamp": "2024-01-01T00:00:00.000000"
-}
-```
-
-### Status Response
-
-```json
-{
-  "message": "Flask API Status: Running!",
-  "version": "1.0.0"
-}
-```
-
----
-
-## API Documentation
-
-### Interactive API Documentation
-
-| **Endpoint** | **Method** | **Description** |
-|:---|:---|:---|
-| `/health` | GET | System health check |
-| `/status` | GET | Service status and version |
-| `/` | GET | Welcome message |
-| `/graphql` | POST | GraphQL query interface |
-
-### Main Endpoints
-
-All endpoints are registered through the central router (`app/router.py`):
-
-| **Endpoint** | **Method** | **Description** | **Domain** |
-|:---|:---|:---|:---|
-| `/api/v1/example` | GET | Example API endpoint | `domain` |
-| `/api/v1/restricted` | GET | Authentication test | `domain` |
-| `/health` | GET | Health check | `router` |
-| `/status` | GET | API status | `router` |
-| `/` | GET | Welcome message | `router` |
-| `/graphql` | POST | GraphQL endpoint | `schemas` |
-
-**Request Example:**
-```bash
-# Example domain endpoint (customize for your use case)
-GET /api/v1/example?param=value
-
-# Health check
-GET /health
-
-# Status
-GET /status
-```
-
-**Response Example:**
-```json
-{
-  "message": "Success",
-  "data": {
-    "id": 1,
-    "value": "example"
-  }
-}
-```
-
-### API Usage Examples
-
-```bash
-# Example API endpoint (customize for your use case)
-curl "http://localhost:8080/api/v1/example?param=value"
-
-# Health check
-curl http://localhost:8080/health
-
-# Status
-curl http://localhost:8080/status
-
-# Welcome message
-curl http://localhost:8080/
-
-# Authenticated endpoint (requires Firebase token)
-curl -H "Authorization: Bearer <token>" http://localhost:8080/api/v1/restricted
-```
-
-### Interacting with the Live System
-
-Once deployed, you can interact with the system through multiple interfaces:
-
-#### REST API
-```bash
-# Health check
-curl https://your-domain.com/health
-
-# API status
-curl https://your-domain.com/status
-
-# Example API endpoint
-curl "https://your-domain.com/api/v1/example?param=value"
-```
-
-#### GraphQL
-```bash
-# GraphQL query (customize for your schema)
-curl -X POST https://your-domain.com/graphql \
-  -H "Content-Type: application/json" \
-  -d '{"query": "{ yourQuery { field1 field2 } }"}'
-```
-
----
-
 ## Project Structure
 
 ### Organized Codebase
@@ -710,10 +462,13 @@ flask-api-boilerplate/
 │   ├── fixtures/           # Test fixtures and data
 │   └── conftest.py         # Pytest configuration
 ├── docs/                    # Documentation
+│   ├── API.md              # API documentation
+│   ├── Architecture.md     # System architecture
 │   ├── Architecture.png    # Architecture diagram
 │   ├── BuildPipeline.png   # CI/CD pipeline diagram
-│   ├── DDD_CELERY_AUDIT.md # DDD compliance audit
-│   └── CELERY_DDD_ARCHITECTURE.md # Celery architecture
+│   ├── Deployment.md       # Deployment guides
+│   ├── Security.md         # Security documentation
+│   └── Testing.md          # Testing guide
 ├── scripts/                 # Utility scripts
 │   ├── create-prod-release.sh    # Production release script
 │   └── setup-pre-commit.sh       # Pre-commit setup
@@ -730,7 +485,7 @@ flask-api-boilerplate/
 
 ### Clean Domain-Driven Architecture
 
-**Perfect Domain Ownership:**
+**Domain Ownership:**
 
 Each domain owns its **entire vertical slice**:
 
@@ -751,11 +506,11 @@ Each domain owns its **entire vertical slice**:
 
 **Key Benefits:**
 - Complete domain ownership (100% vertical slice)
-- Zero scattered code across folders
+- Centralized code organization
 - Clear separation of concerns (sync + async operations)
 - Easy to test, maintain, and scale
 - Simple to add new domains
-- True Domain-Driven Design
+- Clean Domain-Driven Design
 
 ---
 
